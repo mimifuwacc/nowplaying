@@ -2,6 +2,20 @@ import Redirect from "./redirect";
 
 import type { Metadata } from "next";
 
+// 安全なURLスキーマを検証する関数
+function isValidUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+
+    // 許可するプロトコルのみ
+    const allowedProtocols = ["http:", "https:"];
+    return allowedProtocols.includes(parsedUrl.protocol);
+  } catch {
+    // URL.parseでエラーの場合は無効なURL
+    return false;
+  }
+}
+
 interface MusicData {
   title: string;
   artist: string;
@@ -187,6 +201,29 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const { slug } = await params;
   // slugをデコードして音楽URLを取得
   const musicUrl = decodeURIComponent(slug);
+
+  // URLの安全性を検証
+  if (!isValidUrl(musicUrl)) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          fontFamily: "system-ui, sans-serif",
+          backgroundColor: "#1a1a1a",
+          color: "white",
+          textAlign: "center",
+          padding: "20px",
+        }}
+      >
+        <h1>Invalid URL</h1>
+        <p>The provided URL is not allowed for security reasons.</p>
+      </div>
+    );
+  }
 
   // クライアントサイドで音楽URLにリダイレクト
   return <Redirect url={musicUrl} />;
