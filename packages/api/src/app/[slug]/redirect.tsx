@@ -6,10 +6,31 @@ interface RedirectProps {
   url: string;
 }
 
+// 安全なURLスキーマを検証する関数（クライアントサイド用）
+function isValidUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+
+    // 許可するプロトコルのみ
+    const allowedProtocols = ["http:", "https:"];
+    return allowedProtocols.includes(parsedUrl.protocol);
+  } catch {
+    // URL.parseでエラーの場合は無効なURL
+    return false;
+  }
+}
+
 export default function Redirect({ url }: RedirectProps) {
   useEffect(() => {
-    // ページが読み込まれたらYouTube Music URLにリダイレクト
-    window.location.href = url;
+    // クライアントサイドでもURLの安全性を再検証
+    if (isValidUrl(url)) {
+      // ページが読み込まれたら安全なURLにリダイレクト
+      window.location.href = url;
+    } else {
+      console.error("Invalid URL attempted for redirect:", url);
+      // 安全な場所にリダイレクト
+      window.location.href = "/";
+    }
   }, [url]);
 
   return (
