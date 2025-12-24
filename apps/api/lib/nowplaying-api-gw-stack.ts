@@ -6,12 +6,13 @@ import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
-import * as dotenv from "dotenv";
 
-dotenv.config();
+interface NowplayingApiGwStackProps extends cdk.StackProps {
+  certificateArn?: string;
+}
 
 export class NowplayingApiGwStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: NowplayingApiGwStackProps) {
     super(scope, id, props);
 
     const nowplayingApiLambda = new NodejsFunction(this, "lambda", {
@@ -39,12 +40,11 @@ export class NowplayingApiGwStack extends cdk.Stack {
       enableAcceptEncodingBrotli: true,
     });
 
-    // 証明書をインポート
-    const certificate = acm.Certificate.fromCertificateArn(
-      this,
-      "Certificate",
-      process.env.AWS_ACM_CERT || ""
-    );
+    let certificate: acm.ICertificate | undefined;
+
+    if (props?.certificateArn) {
+      certificate = acm.Certificate.fromCertificateArn(this, "Certificate", props.certificateArn);
+    }
 
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
@@ -54,8 +54,10 @@ export class NowplayingApiGwStack extends cdk.Stack {
         cachePolicy: cachePolicy,
         originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
       },
-      domainNames: ["np.mimifuwa.cc"],
-      certificate: certificate,
+      ...(certificate && {
+        domainNames: ["np.mimifuwa.cc"],
+        certificate: certificate,
+      }),
       // defaultRootObject: "/",
     });
 
