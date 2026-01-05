@@ -2,7 +2,10 @@
   "name": "api",
   "type": "module",
   "scripts": {
-    "dev": "ENV=development tsx watch lambda/index.local.ts"
+    "dev": "ENV=development tsx watch lambda/index.local.ts",
+    "build:lambda": "esbuild --bundle --outfile=./lambda/dist/index.mjs --platform=node --format=esm --external:@aws-sdk/* --external:sharp --external:satori ./lambda/index.ts",
+    "build:layer": "./scripts/build-lambda-layer.sh",
+    "deploy": "pnpm build:lambda && pnpm build:layer && cdk deploy --all"
   },
   "devDependencies": {
     "@types/node": "^25.0.3",
@@ -19,6 +22,8 @@
     "aws-cdk-lib": "^2.233.0",
     "constructs": "^10.4.4",
     "hono": "^4.11.1",
+    "satori": "^0.18.3",
+    "sharp": "^0.33.5",
     "tsx": "^4.21.0"
   }
 }

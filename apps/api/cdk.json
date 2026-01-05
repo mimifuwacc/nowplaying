@@ -1,5 +1,5 @@
 {
-  "app": "tsx bin/nowplaying-api-gw.ts",
+  "app": "npx tsx bin/nowplaying-api-gw.ts",
   "watch": {
     "include": ["**"],
     "exclude": [

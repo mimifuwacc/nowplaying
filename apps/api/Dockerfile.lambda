@@ -1,0 +1,23 @@
+# Lambda 用のネイティブアドオンをビルドするための Dockerfile
+FROM amazonlinux:2023
+
+# 開発ツールをインストール
+RUN dnf install -y nodejs npm git python3 make gcc-c++ tar gzip rsync && \
+    dnf clean all
+
+# 作業ディレクトリを設定
+WORKDIR /build
+
+# Node.js バージョンを確認
+RUN node --version && npm --version
+
+# プロジェクトファイルをコピー
+COPY package.json pnpm-lock.yaml ./
+
+# pnpm をインストール
+RUN npm install -g pnpm@10
+
+# 依存関係をインストール（ネイティブアドオンを含む）
+RUN pnpm install --no-frozen-lockfile
+
+CMD ["/bin/bash"]
