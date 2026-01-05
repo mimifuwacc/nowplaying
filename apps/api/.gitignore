@@ -35,3 +35,6 @@ lerna-debug.log*
 .cdk.staging
 cdk.out
 cdk.context.json
+
+# lambda build
+layer/modules

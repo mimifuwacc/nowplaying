@@ -21,13 +21,13 @@ export class NowplayingApiGwStack extends cdk.Stack {
 
     const assetsLayer = new lambda.LayerVersion(this, "AssetsLayer", {
       compatibleRuntimes: [lambda.Runtime.NODEJS_22_X],
-      code: lambda.Code.fromAsset(path.join(__dirname, "../layer")),
+      code: lambda.Code.fromAsset(path.join(__dirname, "../layer/assets")),
       description: "Noto Sans JP font for OG image generation",
     });
 
     const nativeModulesLayer = new lambda.LayerVersion(this, "NativeModulesLayer", {
       compatibleRuntimes: [lambda.Runtime.NODEJS_22_X],
-      code: lambda.Code.fromAsset(path.join(__dirname, "../lambda-build/nodejs-modules.zip")),
+      code: lambda.Code.fromAsset(path.join(__dirname, "../layer/modules")),
       description: "Native modules built for Lambda",
     });
 
