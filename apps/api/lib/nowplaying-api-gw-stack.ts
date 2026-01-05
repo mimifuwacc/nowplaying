@@ -1,8 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
-import * as apigwv2integrations from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
@@ -43,27 +41,13 @@ export class NowplayingApiGwStack extends cdk.Stack {
       environment: {},
     });
 
-    const httpApi = new apigwv2.HttpApi(this, "nowplayingApi", {
-      apiName: "nowplaying-api",
-      description: "NowPlaying OG Image Generation API",
-    });
-
-    // Lambda統合
-    const integration = new apigwv2integrations.HttpLambdaIntegration(
-      "LambdaIntegration",
-      nowplayingApiLambda
-    );
-
-    httpApi.addRoutes({
-      path: "/",
-      methods: [apigwv2.HttpMethod.ANY],
-      integration,
-    });
-
-    httpApi.addRoutes({
-      path: "/{proxy+}",
-      methods: [apigwv2.HttpMethod.ANY],
-      integration,
+    const functionUrl = nowplayingApiLambda.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      cors: {
+        allowedOrigins: ["*"],
+        allowedMethods: [lambda.HttpMethod.GET],
+        allowedHeaders: ["*"],
+      },
     });
 
     const cachePolicy = new cloudfront.CachePolicy(this, "CachePolicy", {
@@ -85,7 +69,7 @@ export class NowplayingApiGwStack extends cdk.Stack {
 
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
-        origin: new origins.HttpOrigin(cdk.Fn.select(2, cdk.Fn.split("/", httpApi.apiEndpoint)), {
+        origin: new origins.HttpOrigin(cdk.Fn.select(2, cdk.Fn.split("/", functionUrl.url)), {
           originSslProtocols: [cloudfront.OriginSslPolicy.TLS_V1_2],
         }),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -104,9 +88,9 @@ export class NowplayingApiGwStack extends cdk.Stack {
       description: "CloudFront Distribution Url",
     });
 
-    new cdk.CfnOutput(this, "ApiUrl", {
-      value: httpApi.apiEndpoint,
-      description: "HTTP API Endpoint URL",
+    new cdk.CfnOutput(this, "FunctionUrl", {
+      value: functionUrl.url,
+      description: "Lambda Function URL",
     });
   }
 }
