@@ -38,7 +38,7 @@ export class NowplayingApiGwStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_22_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset(path.join(__dirname, "../lambda/dist")),
-      memorySize: 256,
+      memorySize: 1769,
       timeout: cdk.Duration.seconds(30),
       layers: [assetsLayer, nativeModulesLayer],
       environment: {
@@ -86,7 +86,7 @@ export class NowplayingApiGwStack extends cdk.Stack {
         originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
       },
       ...(certificate && {
-        domainNames: ["np.mimifuwa.cc"],
+        domainNames: [process.env.PUBLIC_DOMAIN_NAME || ""],
         certificate: certificate,
       }),
     });
