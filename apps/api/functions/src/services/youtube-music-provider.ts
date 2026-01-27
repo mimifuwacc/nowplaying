@@ -1,6 +1,5 @@
-import { MusicService } from "../types/music-service";
-
-import type { MusicServiceProvider, TrackData } from "../types/music-service";
+import { MusicService } from "./music-service";
+import type { MusicServiceProvider, TrackData } from "./music-service";
 
 export class YouTubeMusicProvider implements MusicServiceProvider {
   service = MusicService.YOUTUBE_MUSIC;
@@ -21,7 +20,7 @@ export class YouTubeMusicProvider implements MusicServiceProvider {
   }
 
   async fetchTrackData(videoId: string): Promise<TrackData> {
-    const apiKey = process.env.YOUTUBE_DATA_API_KEY;
+    const apiKey = process.env.YOUTUBE_API_KEY;
     if (!apiKey) {
       throw new Error("YouTube Data API key is not configured");
     }
@@ -61,6 +60,6 @@ export class YouTubeMusicProvider implements MusicServiceProvider {
   }
 
   getServiceIcon(): string {
-    return "/icons/yt.svg";
+    return "youtube-music";
   }
 }

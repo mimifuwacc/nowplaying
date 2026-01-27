@@ -1,6 +1,5 @@
-import { MusicService } from "../types/music-service";
-
-import type { MusicServiceProvider, TrackData } from "../types/music-service";
+import { MusicService } from "./music-service";
+import type { MusicServiceProvider, TrackData } from "./music-service";
 
 export class SpotifyProvider implements MusicServiceProvider {
   service = MusicService.SPOTIFY;
@@ -86,6 +85,6 @@ export class SpotifyProvider implements MusicServiceProvider {
   }
 
   getServiceIcon(): string {
-    return "/icons/spotify.svg";
+    return "spotify";
   }
 }

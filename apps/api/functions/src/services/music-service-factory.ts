@@ -1,9 +1,7 @@
-import { MusicService } from "../types/music-service";
-
+import { MusicService } from "./music-service";
 import { SpotifyProvider } from "./spotify-provider";
 import { YouTubeMusicProvider } from "./youtube-music-provider";
-
-import type { MusicServiceProvider } from "../types/music-service";
+import type { MusicServiceProvider } from "./music-service";
 
 export class MusicServiceFactory {
   private static providers = new Map<MusicService, MusicServiceProvider>([
