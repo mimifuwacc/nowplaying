@@ -12,7 +12,7 @@ WORKDIR /build
 RUN node --version && npm --version
 
 # プロジェクトファイルをコピー
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 
 # pnpm をインストール
 RUN npm install -g pnpm@10
