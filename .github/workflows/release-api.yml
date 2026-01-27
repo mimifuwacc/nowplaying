@@ -53,9 +53,9 @@ jobs:
         run: pnpm install
 
       - name: Build API
-        run: |
-          cd ${{ env.PACKAGE_PATH }}
-          pnpm run build
+        working-directory: ${{ env.PACKAGE_PATH }}
+        run: pnpm run build
+        shell: bash
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
