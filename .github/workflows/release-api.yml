@@ -1,9 +1,9 @@
-name: Release Extension
+name: Release API
 
 on:
   push:
     tags:
-      - "extension@*"
+      - "api@*"
   workflow_dispatch:
     inputs:
       version:
@@ -15,11 +15,11 @@ permissions:
   contents: write
 
 env:
-  PACKAGE_NAME: extension
-  PACKAGE_PATH: packages/extension
+  PACKAGE_NAME: api
+  PACKAGE_PATH: apps/api
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get_version.outputs.version }}
@@ -35,7 +35,7 @@ jobs:
             VERSION="${{ inputs.version }}"
             echo "version=$VERSION" >> $GITHUB_OUTPUT
           else
-            VERSION=${GITHUB_REF#refs/tags/extension@}
+            VERSION=${GITHUB_REF#refs/tags/api@}
             echo "version=$VERSION" >> $GITHUB_OUTPUT
           fi
 
@@ -52,27 +52,36 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build extension
+      - name: Build API
         run: |
           cd ${{ env.PACKAGE_PATH }}
-          pnpm install
           pnpm run build
 
-      - name: Create zip file
-        run: |
-          cd packages/extension/build/chrome-mv3-prod
-          zip -r ../../../extension-${{ steps.get_version.outputs.version }}.zip .
-          cd ../../../..
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          name: extension-zip
-          path: extension-${{ steps.get_version.outputs.version }}.zip
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to AWS
+        run: |
+          cd packages/infra
+          pnpm run deploy --require-approval never --concurrency 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          PUBLIC_DOMAIN_NAME: ${{ secrets.PUBLIC_DOMAIN_NAME }}
+          CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          ENV: production
 
   release:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-and-deploy
 
     steps:
       - name: Checkout code
@@ -80,25 +89,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: extension-zip
-
       - name: Generate release notes
         id: release_notes
         uses: ./.github/actions/generate-release-notes
         with:
-          package_name: extension
-          version: ${{ needs.build.outputs.version }}
+          package_name: api
+          version: ${{ needs.build-and-deploy.outputs.version }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: extension@${{ needs.build.outputs.version }}
-          name: Extension ${{ needs.build.outputs.version }}
+          tag_name: api@${{ needs.build-and-deploy.outputs.version }}
+          name: API ${{ needs.build-and-deploy.outputs.version }}
           body: ${{ steps.release_notes.outputs.notes }}
-          files: extension-${{ needs.build.outputs.version }}.zip
           draft: false
           prerelease: false
         env:
