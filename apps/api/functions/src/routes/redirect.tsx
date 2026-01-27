@@ -10,10 +10,7 @@ redirect.get("/", (c) => {
 redirect.get("/:slug", async (c) => {
   const slug = c.req.param("slug");
 
-  console.log("slug", slug);
-
   if (!slug) {
-    console.log("Missing slug parameter");
     return c.json({ error: "Missing slug" }, 400);
   }
 
@@ -24,7 +21,6 @@ redirect.get("/:slug", async (c) => {
       return c.json({ error: "Invalid URL" }, 400);
     }
 
-    // Fetch music metadata for OGP
     const provider = MusicServiceFactory.detectServiceFromUrl(musicUrl);
     let title = "Now Playing";
     let description = "Now Playing";
