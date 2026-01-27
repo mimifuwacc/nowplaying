@@ -91,7 +91,7 @@ jobs:
 
       - name: Generate release notes
         id: release_notes
-        uses: ./.github/actions/generate-release-notes
+        uses: ./.github/actions/generate-release-notes.yml
         with:
           package_name: api
           version: ${{ needs.build-and-deploy.outputs.version }}
