@@ -17,7 +17,7 @@ COPY package.json pnpm-lock.yaml ./
 # pnpm をインストール
 RUN npm install -g pnpm@10
 
-# 依存関係をインストール（ネイティブアドオンを含む）
-RUN pnpm install --no-frozen-lockfile
+# dependenciesのみをインストール（ネイティブアドオンを含む）
+RUN pnpm install --prod --no-frozen-lockfile
 
 CMD ["/bin/bash"]

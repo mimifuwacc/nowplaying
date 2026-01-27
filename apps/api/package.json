@@ -8,6 +8,7 @@
     "deploy": "pnpm build:src && pnpm build:modules && cdk deploy --all"
   },
   "devDependencies": {
+    "@hono/node-server": "^1.19.7",
     "@types/node": "^25.0.3",
     "aws-cdk": "2.1100.1",
     "aws-cdk-lib": "^2.233.0",
