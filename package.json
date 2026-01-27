@@ -4,14 +4,13 @@
   "private": true,
   "packageManager": "pnpm@10.12.1",
   "scripts": {
-    "api": "pnpm --filter 'api'",
-    "extension": "pnpm --filter 'extension'",
-    "infra": "pnpm --filter 'infra'",
-    "fix": "prettier --write . && pnpm api fix && pnpm extension fix"
+    "format": "pnpm -r run format",
+    "lint": "pnpm -r run lint"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "dotenv-cli": "^11.0.0",
     "lefthook": "^1.11.14",
     "prettier": "^3.6.2",
     "typescript": "5.3.3"

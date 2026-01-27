@@ -2,16 +2,16 @@
   "name": "infra",
   "type": "module",
   "scripts": {
-    "deploy": "cdk deploy",
-    "destroy": "cdk destroy",
-    "diff": "cdk diff"
+    "deploy": "dotenv -e ../../.env -- cdk deploy",
+    "destroy": "dotenv -e ../../.env -- cdk destroy",
+    "diff": "dotenv -e ../../.env -- cdk diff"
   },
   "devDependencies": {
     "@types/node": "^25.0.3",
     "aws-cdk": "2.1100.1",
     "aws-cdk-lib": "^2.233.0",
     "constructs": "^10.4.4",
-    "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0",
     "source-map-support": "^0.5.21",
     "tsx": "^4.21.0",
     "typescript": "5.3.3"

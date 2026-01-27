@@ -7,12 +7,9 @@ commit-msg:
 pre-commit:
   commands:
     fix:
-      run: pnpm run fix
+      run: pnpm run format
 
     git-update:
       run: git update-index --again
 
 pre-push:
-  commands:
-    fix:
-      run: pnpm run fix

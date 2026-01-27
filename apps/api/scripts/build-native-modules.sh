@@ -27,5 +27,5 @@ docker run --platform linux/amd64 --rm \
     rsync -a --copy-links node_modules/.pnpm/*/node_modules/ /output/modules/nodejs/node_modules/ 2>/dev/null || true
   "
 
-green "\nNative modules built and copied to $LAYER_DIR"
-
+SIZE=$(du -sh "$LAYER_DIR" | cut -f1)
+green "\nNative modules built and copied to $LAYER_DIR ($SIZE)"

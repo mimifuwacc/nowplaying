@@ -7,12 +7,9 @@ import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import * as path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import * as dotenv from "dotenv";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
 interface NowplayingApiGwStackProps extends cdk.StackProps {
   certificateArn?: string;
