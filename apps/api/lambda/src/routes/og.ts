@@ -1,26 +1,47 @@
 import { Hono } from "hono";
 import satori from "satori";
 import sharp from "sharp";
+import { MusicServiceFactory } from "../services/music-service-factory";
+import { MusicService } from "../services/music-service";
+
+interface TrackDataWithType {
+  title: string;
+  artist: string;
+  thumbnail: string;
+  serviceName: string;
+  serviceType: "spotify" | "youtube-music";
+}
 
 const og = new Hono();
 
 og.get("/og", async (c) => {
   const url = c.req.query("url");
 
-  // TODO: 実際のデータ取得処理を後で実装
-  // 今はダミーデータを使用
-  const title = "改変";
-  const artist = "GIRLS REVOLUTION PROJECT - Topic";
+  if (!url) {
+    return c.text("URL parameter is required", 400);
+  }
+
+  // URLから音楽サービスを検出してトラックデータを取得
+  const trackData = await fetchTrackData(url);
+  if (!trackData) {
+    return c.text("Unsupported music service URL", 400);
+  }
+
+  const title = trackData.title;
+  const artist = trackData.artist;
+
+  // 画像がない場合はデフォルト画像を使用
   const thumbnail =
-    "https://camo.githubusercontent.com/5e45bc648dba68520ce949a53690af6bcef2880f84a1d46cbb1636649afd6d84/68747470733a2f2f796176757a63656c696b65722e6769746875622e696f2f73616d706c652d696d616765732f696d6167652d313032312e6a7067";
-  const serviceName = "YouTube Music";
+    trackData.thumbnail ||
+    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTUwIiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4Ij5ObyBJbWFnZTwvdGV4dD4KPC9zdmc+";
 
   // フォントデータを読み込み
   const regularFontData = await loadFont("regular");
   const boldFontData = await loadFont("bold");
 
   // アイコンを読み込み
-  const serviceIcon = await loadIcon("youtube-music");
+  const serviceIcon = await loadIcon(trackData.serviceType);
+  const serviceName = trackData.serviceName;
 
   // SVGを生成
   const svg = await satori(
@@ -95,7 +116,7 @@ og.get("/og", async (c) => {
                     style: {
                       width: "480px",
                       height: "480px",
-                      borderRadius: "16px",
+                      borderRadius: "26px",
                       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
                       objectFit: "cover",
                     },
@@ -230,6 +251,7 @@ og.get("/og", async (c) => {
   const pngBuffer = await convertSvgToPng(svg);
 
   c.header("Content-Type", "image/png");
+  c.header("Cache-Control", "public, max-age=3600");
   return c.body(new Uint8Array(pngBuffer));
 });
 
@@ -286,7 +308,7 @@ async function convertSvgToPng(svg: string): Promise<Buffer> {
     const image = sharp(pngBuffer);
     const metadata = await image.metadata();
 
-    // 40pxずつ切り抜く
+    // 20pxずつ切り抜く
     const left = 20;
     const top = 20;
     const width = (metadata.width ?? 0) - 40;
@@ -303,6 +325,34 @@ async function convertSvgToPng(svg: string): Promise<Buffer> {
   } catch (error) {
     console.error("Error converting SVG to PNG:", error);
     throw error;
+  }
+}
+
+async function fetchTrackData(url: string): Promise<TrackDataWithType | null> {
+  try {
+    const provider = MusicServiceFactory.detectServiceFromUrl(url);
+    if (!provider) {
+      return null;
+    }
+
+    const trackId = provider.extractId(url);
+    if (!trackId) {
+      return null;
+    }
+
+    const trackData = await provider.fetchTrackData(trackId);
+    const serviceType = provider.service === MusicService.SPOTIFY ? "spotify" : "youtube-music";
+
+    return {
+      title: trackData.title,
+      artist: trackData.artist,
+      thumbnail: trackData.thumbnail,
+      serviceName: provider.getServiceName(),
+      serviceType,
+    };
+  } catch (error) {
+    console.error("Error fetching track data:", error);
+    return null;
   }
 }
 
