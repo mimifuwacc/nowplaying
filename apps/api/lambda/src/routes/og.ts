@@ -14,7 +14,7 @@ interface TrackDataWithType {
 
 const og = new Hono();
 
-og.get("/og", async (c) => {
+og.get("/", async (c) => {
   const url = c.req.query("url");
 
   if (!url) {

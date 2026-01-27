@@ -45,6 +45,7 @@ export class NowplayingApiGwStack extends cdk.Stack {
         YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY || "",
         SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID || "",
         SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET || "",
+        PUBLIC_DOMAIN_NAME: process.env.PUBLIC_DOMAIN_NAME || "",
       },
     });
 
