@@ -2,20 +2,15 @@
   "name": "api",
   "type": "module",
   "scripts": {
-    "dev": "ENV=development tsx watch lambda/index.local.ts",
-    "build:src": "esbuild --bundle --outfile=./lambda/dist/index.mjs --platform=node --format=esm --external:@aws-sdk/* --external:sharp --external:satori ./lambda/index.ts",
-    "build:modules": "./scripts/build-native-modules.sh",
-    "deploy": "pnpm build:src && pnpm build:modules && cdk deploy --all"
+    "dev": "ENV=development tsx watch functions/index.local.ts",
+    "build:src": "esbuild --bundle --outfile=./functions/dist/index.mjs --platform=node --format=esm --external:@aws-sdk/* --external:sharp --external:satori ./functions/index.ts",
+    "build:modules": "./scripts/build-native-modules.sh"
   },
   "devDependencies": {
     "@hono/node-server": "^1.19.7",
     "@types/node": "^25.0.3",
-    "aws-cdk": "2.1100.1",
-    "aws-cdk-lib": "^2.233.0",
-    "constructs": "^10.4.4",
     "dotenv": "^17.2.3",
     "esbuild": "^0.21.4",
-    "source-map-support": "^0.5.21",
     "tsx": "^4.21.0"
   },
   "dependencies": {

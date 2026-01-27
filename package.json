@@ -6,6 +6,7 @@
   "scripts": {
     "api": "pnpm --filter 'api'",
     "extension": "pnpm --filter 'extension'",
+    "infra": "pnpm --filter 'infra'",
     "fix": "prettier --write . && pnpm api fix && pnpm extension fix"
   },
   "devDependencies": {

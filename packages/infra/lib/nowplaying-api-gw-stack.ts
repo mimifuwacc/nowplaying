@@ -12,7 +12,7 @@ import * as dotenv from "dotenv";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: path.join(__dirname, "../../.env") });
+dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
 interface NowplayingApiGwStackProps extends cdk.StackProps {
   certificateArn?: string;
@@ -24,20 +24,20 @@ export class NowplayingApiGwStack extends cdk.Stack {
 
     const assetsLayer = new lambda.LayerVersion(this, "AssetsLayer", {
       compatibleRuntimes: [lambda.Runtime.NODEJS_22_X],
-      code: lambda.Code.fromAsset(path.join(__dirname, "../layer/assets")),
+      code: lambda.Code.fromAsset(path.join(__dirname, "../../../apps/api/layer/assets")),
       description: "Noto Sans JP font for OG image generation",
     });
 
     const nativeModulesLayer = new lambda.LayerVersion(this, "NativeModulesLayer", {
       compatibleRuntimes: [lambda.Runtime.NODEJS_22_X],
-      code: lambda.Code.fromAsset(path.join(__dirname, "../layer/modules")),
+      code: lambda.Code.fromAsset(path.join(__dirname, "../../../apps/api/layer/modules")),
       description: "Native modules built for Lambda",
     });
 
     const nowplayingApiLambda = new lambda.Function(this, "lambda", {
       runtime: lambda.Runtime.NODEJS_22_X,
       handler: "index.handler",
-      code: lambda.Code.fromAsset(path.join(__dirname, "../lambda/dist")),
+      code: lambda.Code.fromAsset(path.join(__dirname, "../../../apps/api/functions/dist")),
       memorySize: 1769,
       timeout: cdk.Duration.seconds(30),
       layers: [assetsLayer, nativeModulesLayer],

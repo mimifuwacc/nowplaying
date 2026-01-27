@@ -23,51 +23,17 @@ importers:
       "@types/node":
         specifier: ^25.0.3
         version: 25.0.3
-      aws-cdk:
-        specifier: 2.1100.1
-        version: 2.1100.1
-      aws-cdk-lib:
-        specifier: ^2.233.0
-        version: 2.233.0(constructs@10.4.4)
-      constructs:
-        specifier: ^10.4.4
-        version: 10.4.4
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
       esbuild:
         specifier: ^0.21.4
         version: 0.21.5
-      source-map-support:
-        specifier: ^0.5.21
-        version: 0.5.21
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
 
 packages:
-  "@aws-cdk/asset-awscli-v1@2.2.242":
-    resolution:
-      {
-        integrity: sha512-4c1bAy2ISzcdKXYS1k4HYZsNrgiwbiDzj36ybwFVxEWZXVAP0dimQTCaB9fxu7sWzEjw3d+eaw6Fon+QTfTIpQ==,
-      }
-
-  "@aws-cdk/asset-node-proxy-agent-v6@2.1.0":
-    resolution:
-      {
-        integrity: sha512-7bY3J8GCVxLupn/kNmpPc5VJz8grx+4RKfnnJiO1LG+uxkZfANZG3RMHhE+qQxxwkyQ9/MfPtTpf748UhR425A==,
-      }
-
-  "@aws-cdk/cloud-assembly-schema@48.20.0":
-    resolution:
-      {
-        integrity: sha512-+eeiav9LY4wbF/EFuCt/vfvi/Zoxo8bf94PW5clbMraChEliq83w4TbRVy0jB9jE0v1ooFTtIjSQkowSPkfISg==,
-      }
-    engines: { node: ">= 18.0.0" }
-    bundledDependencies:
-      - jsonschema
-      - semver
-
   "@emnapi/runtime@1.8.1":
     resolution:
       {
@@ -700,47 +666,12 @@ packages:
         integrity: sha512-W609buLVRVmeW693xKfzHeIV6nJGGz98uCPfeXI1ELMLXVeKYZ9m15fAMSaUPBHYLGFsVRcMmSCksQOrZV9BYA==,
       }
 
-  aws-cdk-lib@2.233.0:
-    resolution:
-      {
-        integrity: sha512-rBOzIA8TGC5eB8TyVIvckAVlX7a0/gVPE634FguhSee9RFaovjgc5+IixGyyLJhu3lLsMSjqDoqTJg2ab+p8ng==,
-      }
-    engines: { node: ">= 18.0.0" }
-    peerDependencies:
-      constructs: ^10.0.0
-    bundledDependencies:
-      - "@balena/dockerignore"
-      - case
-      - fs-extra
-      - ignore
-      - jsonschema
-      - minimatch
-      - punycode
-      - semver
-      - table
-      - yaml
-      - mime-types
-
-  aws-cdk@2.1100.1:
-    resolution:
-      {
-        integrity: sha512-q2poFrQh90TK6eqeI0zznA8r1JkDI63WVOSqC7gFGo6qjQjAnvFk/utxHoNRgAC0RL0CLd19uCcHh3jfX9NiSg==,
-      }
-    engines: { node: ">= 18.0.0" }
-    hasBin: true
-
   base64-js@0.0.8:
     resolution:
       {
         integrity: sha512-3XSA2cR/h/73EzlXXdU6YNycmYI7+kicTxks4eJg2g39biHR84slg2+des+p7iHYhbRg/udIS4TD53WabcOUkw==,
       }
     engines: { node: ">= 0.4" }
-
-  buffer-from@1.1.2:
-    resolution:
-      {
-        integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==,
-      }
 
   camelize@1.0.1:
     resolution:
@@ -773,12 +704,6 @@ packages:
         integrity: sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==,
       }
     engines: { node: ">=12.5.0" }
-
-  constructs@10.4.4:
-    resolution:
-      {
-        integrity: sha512-lP0qC1oViYf1cutHo9/KQ8QL637f/W29tDmv/6sy35F5zs+MD9f66nbAAIjicwc7fwyuF3rkg6PhZh4sfvWIpA==,
-      }
 
   css-background-parser@0.1.0:
     resolution:
@@ -860,14 +785,6 @@ packages:
       {
         integrity: sha512-5u2V/CDW15QM1XbbgS+0DfPxVB+jUKhWEKuuFuHncbk3tEEqzmoXL+2KyOFuKGqOnmdIy0/davWF1CkuwtibCw==,
       }
-
-  fsevents@2.3.2:
-    resolution:
-      {
-        integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==,
-      }
-    engines: { node: ^8.16.0 || ^10.6.0 || >=11.0.0 }
-    os: [darwin]
 
   fsevents@2.3.3:
     resolution:
@@ -961,19 +878,6 @@ packages:
         integrity: sha512-nAu1WFPQSMNr2Zn9PGSZK9AGn4t/y97lEm+MXTtUDwfP0ksAIX4nO+6ruD9Jwut4C49SB1Ws+fbXsm/yScWOHw==,
       }
 
-  source-map-support@0.5.21:
-    resolution:
-      {
-        integrity: sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==,
-      }
-
-  source-map@0.6.1:
-    resolution:
-      {
-        integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==,
-      }
-    engines: { node: ">=0.10.0" }
-
   string.prototype.codepointat@0.2.1:
     resolution:
       {
@@ -1019,12 +923,6 @@ packages:
       }
 
 snapshots:
-  "@aws-cdk/asset-awscli-v1@2.2.242": {}
-
-  "@aws-cdk/asset-node-proxy-agent-v6@2.1.0": {}
-
-  "@aws-cdk/cloud-assembly-schema@48.20.0": {}
-
   "@emnapi/runtime@1.8.1":
     dependencies:
       tslib: 2.8.1
@@ -1265,20 +1163,7 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
-  aws-cdk-lib@2.233.0(constructs@10.4.4):
-    dependencies:
-      "@aws-cdk/asset-awscli-v1": 2.2.242
-      "@aws-cdk/asset-node-proxy-agent-v6": 2.1.0
-      "@aws-cdk/cloud-assembly-schema": 48.20.0
-      constructs: 10.4.4
-
-  aws-cdk@2.1100.1:
-    optionalDependencies:
-      fsevents: 2.3.2
-
   base64-js@0.0.8: {}
-
-  buffer-from@1.1.2: {}
 
   camelize@1.0.1: {}
 
@@ -1297,8 +1182,6 @@ snapshots:
     dependencies:
       color-convert: 2.0.1
       color-string: 1.9.1
-
-  constructs@10.4.4: {}
 
   css-background-parser@0.1.0: {}
 
@@ -1379,9 +1262,6 @@ snapshots:
 
   fflate@0.7.4: {}
 
-  fsevents@2.3.2:
-    optional: true
-
   fsevents@2.3.3:
     optional: true
 
@@ -1456,13 +1336,6 @@ snapshots:
   simple-swizzle@0.2.4:
     dependencies:
       is-arrayish: 0.3.4
-
-  source-map-support@0.5.21:
-    dependencies:
-      buffer-from: 1.1.2
-      source-map: 0.6.1
-
-  source-map@0.6.1: {}
 
   string.prototype.codepointat@0.2.1: {}
 

@@ -3,8 +3,14 @@ import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import { NowplayingApiGwStack } from "@/lib/nowplaying-api-gw-stack";
 import * as dotenv from "dotenv";
+import * as path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
 const app = new cdk.App();
 

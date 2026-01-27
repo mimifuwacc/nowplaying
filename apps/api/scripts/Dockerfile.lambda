@@ -17,7 +17,7 @@ COPY package.json pnpm-lock.yaml ./
 # pnpm をインストール
 RUN npm install -g pnpm@10
 
-# dependenciesのみをインストール（ネイティブアドオンを含む）
-RUN pnpm install --prod --no-frozen-lockfile
+# ネイティブモジュールのみをインストール
+RUN pnpm install sharp satori --prod
 
 CMD ["/bin/bash"]
