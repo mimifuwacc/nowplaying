@@ -1,21 +1,19 @@
-name: Changesets
+name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      publish:
-        description: "Create version PR and publish"
-        required: true
-        type: boolean
-        default: true
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
-  contents: write
   pull-requests: write
+  contents: write
 
 jobs:
-  version:
-    name: Version Packages
+  release:
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,8 +35,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create Release Pull Request or Publish
-        id: changesets
+      - name: Create Release Pull Request
         uses: changesets/action@v1
         with:
           version: pnpm changeset:version
