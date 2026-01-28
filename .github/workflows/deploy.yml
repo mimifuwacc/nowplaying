@@ -31,11 +31,11 @@ jobs:
       - name: Get changed packages
         id: changed-packages
         run: |
-          # changeset-release ブランチと main の差分で変更された package.json を検出
-          git fetch origin main:main
+          # changeset-release ブランチと origin/main の差分で変更された package.json を検出
+          git fetch origin main
 
           # API の変更をチェック
-          if git diff --name-only main...HEAD | grep -q "apps/api/package.json"; then
+          if git diff --name-only origin/main...HEAD | grep -q "apps/api/package.json"; then
             API_VERSION=$(node -p "require('./apps/api/package.json').version")
             echo "api=true" >> $GITHUB_OUTPUT
             echo "api_version=$API_VERSION" >> $GITHUB_OUTPUT
@@ -46,7 +46,7 @@ jobs:
           fi
 
           # Extension の変更をチェック
-          if git diff --name-only main...HEAD | grep -q "apps/extension/package.json"; then
+          if git diff --name-only origin/main...HEAD | grep -q "apps/extension/package.json"; then
             EXT_VERSION=$(node -p "require('./apps/extension/package.json').version")
             echo "extension=true" >> $GITHUB_OUTPUT
             echo "extension_version=$EXT_VERSION" >> $GITHUB_OUTPUT
