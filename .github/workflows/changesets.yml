@@ -44,19 +44,6 @@ jobs:
           version: pnpm changeset:version
           commit: "chore: version packages"
           title: "chore: version packages"
-          createGithubRelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create tags
-        if: steps.changesets.outputs.hasChangesets == 'true'
-        run: |
-          API_VERSION=$(node -p "require('./apps/api/package.json').version")
-          git tag "api@${API_VERSION}"
-          git push origin "api@${API_VERSION}"
-
-          EXT_VERSION=$(node -p "require('./apps/extension/package.json').version")
-          git tag "extension@${EXT_VERSION}"
-          git push origin "extension@${EXT_VERSION}"
+          createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
