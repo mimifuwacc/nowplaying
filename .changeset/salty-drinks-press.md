@@ -1,5 +1,4 @@
 ---
-"extension": major
 "api": major
 ---
 
