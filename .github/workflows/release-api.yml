@@ -89,19 +89,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate release notes
-        id: release_notes
-        uses: ./.github/actions/generate-release-notes
-        with:
-          package_name: api
-          version: ${{ needs.build-and-deploy.outputs.version }}
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: api@${{ needs.build-and-deploy.outputs.version }}
           name: API ${{ needs.build-and-deploy.outputs.version }}
-          body: ${{ steps.release_notes.outputs.notes }}
+          body: |
+            ## Release ${{ needs.build-and-deploy.outputs.version }}
+
+            See [CHANGELOG.md](apps/api/CHANGELOG.md) for details.
           draft: false
           prerelease: false
         env:

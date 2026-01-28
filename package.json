@@ -5,9 +5,15 @@
   "packageManager": "pnpm@10.12.1",
   "scripts": {
     "format": "pnpm -r run format",
-    "lint": "pnpm -r run lint"
+    "lint": "pnpm -r run lint",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish",
+    "version:api": "changeset version && pnpm install --lockfile-only",
+    "version:extension": "changeset version && pnpm install --lockfile-only"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.11",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "dotenv-cli": "^11.0.0",

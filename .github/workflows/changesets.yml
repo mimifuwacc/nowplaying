@@ -1,0 +1,65 @@
+name: Changesets
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  version:
+    name: Version Packages
+    runs-on: ubuntu-latest
+    if: |
+      !contains(github.event.head_commit.message, 'ci:') &&
+      !contains(github.event.head_commit.message, 'chore:') &&
+      !contains(github.event.head_commit.message, 'docs:')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm changeset:version
+          commit: "chore: version packages"
+          title: "chore: version packages"
+          createGithubRelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create tags
+        if: steps.changesets.outputs.hasChangesets == 'true'
+        run: |
+          # API タグ
+          API_VERSION=$(node -p "require('./apps/api/package.json').version")
+          git tag "api@${API_VERSION}"
+          git push origin "api@${API_VERSION}"
+
+          # Extension タグ
+          EXT_VERSION=$(node -p "require('./packages/extension/package.json').version")
+          git tag "extension@${EXT_VERSION}"
+          git push origin "extension@${EXT_VERSION}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

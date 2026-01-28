@@ -85,19 +85,15 @@ jobs:
         with:
           name: extension-zip
 
-      - name: Generate release notes
-        id: release_notes
-        uses: ./.github/actions/generate-release-notes
-        with:
-          package_name: extension
-          version: ${{ needs.build.outputs.version }}
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: extension@${{ needs.build.outputs.version }}
           name: Extension ${{ needs.build.outputs.version }}
-          body: ${{ steps.release_notes.outputs.notes }}
+          body: |
+            ## Release ${{ needs.build.outputs.version }}
+
+            See [CHANGELOG.md](packages/extension/CHANGELOG.md) for details.
           files: extension-${{ needs.build.outputs.version }}.zip
           draft: false
           prerelease: false
