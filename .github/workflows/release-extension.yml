@@ -93,7 +93,7 @@ jobs:
           body: |
             ## Release ${{ needs.build.outputs.version }}
 
-            See [CHANGELOG.md](packages/extension/CHANGELOG.md) for details.
+            See [CHANGELOG.md](apps/extension/CHANGELOG.md) for details.
           files: extension-${{ needs.build.outputs.version }}.zip
           draft: false
           prerelease: false
