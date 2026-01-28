@@ -1,15 +1,28 @@
 name: Release API
 
 on:
-  push:
-    tags:
-      - "api@*"
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Release version (e.g., 1.0.0)"
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY_ID:
         required: true
-        type: string
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_REGION:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+      PUBLIC_DOMAIN_NAME:
+        required: true
+      CERTIFICATE_ARN:
+        required: true
+      YOUTUBE_API_KEY:
+        required: true
+      SPOTIFY_CLIENT_ID:
+        required: true
+      SPOTIFY_CLIENT_SECRET:
+        required: true
+      GITHUB_TOKEN:
+        required: true
 
 permissions:
   contents: write
@@ -31,13 +44,9 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            VERSION="${{ inputs.version }}"
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-          else
-            VERSION=${GITHUB_REF#refs/tags/api@}
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-          fi
+          VERSION=$(node -p "require('./apps/api/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

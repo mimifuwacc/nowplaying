@@ -5,42 +5,69 @@ on:
     branches:
       - main
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
-
 permissions:
-  pull-requests: write
   contents: write
 
 jobs:
-  release:
-    name: Release
+  detect-changes:
+    name: Detect Changes
     runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.changes.outputs.api }}
+      extension: ${{ steps.changes.outputs.extension }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: Detect changed packages
+        id: changes
+        run: |
+          # 前回のタグから現在のコミットまでの変更を検出
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 
-      - name: Install dependencies
-        run: pnpm install
+          if [ -z "$LATEST_TAG" ]; then
+            BASE="HEAD~5"
+          else
+            BASE="$LATEST_TAG"
+          fi
 
-      - name: Create Release Pull Request
-        uses: changesets/action@v1
-        with:
-          version: pnpm changeset:version
-          commit: "chore: version packages"
-          title: "chore: version packages"
-          createGithubReleases: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "Base: $BASE"
+
+          # API の変更をチェック
+          if git diff --name-only $BASE..HEAD | grep -q "apps/api"; then
+            echo "api=true" >> $GITHUB_OUTPUT
+            echo "API changed"
+          else
+            echo "api=false" >> $GITHUB_OUTPUT
+            echo "API not changed"
+          fi
+
+          # Extension の変更をチェック
+          if git diff --name-only $BASE..HEAD | grep -q "apps/extension"; then
+            echo "extension=true" >> $GITHUB_OUTPUT
+            echo "Extension changed"
+          else
+            echo "extension=false" >> $GITHUB_OUTPUT
+            echo "Extension not changed"
+          fi
+
+  release-api:
+    name: Release API
+    needs: detect-changes
+    if: needs.detect-changes.outputs.api == 'true'
+    uses: ./.github/workflows/release-api.yml
+    secrets: inherit
+
+  release-extension:
+    name: Release Extension
+    needs: detect-changes
+    if: needs.detect-changes.outputs.extension == 'true'
+    uses: ./.github/workflows/release-extension.yml
+    secrets: inherit

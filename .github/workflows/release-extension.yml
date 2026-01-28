@@ -1,15 +1,10 @@
 name: Release Extension
 
 on:
-  push:
-    tags:
-      - "extension@*"
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Release version (e.g., 1.0.0)"
+  workflow_call:
+    secrets:
+      GITHUB_TOKEN:
         required: true
-        type: string
 
 permissions:
   contents: write
@@ -31,13 +26,9 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            VERSION="${{ inputs.version }}"
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-          else
-            VERSION=${GITHUB_REF#refs/tags/extension@}
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
-          fi
+          VERSION=$(node -p "require('./apps/extension/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
