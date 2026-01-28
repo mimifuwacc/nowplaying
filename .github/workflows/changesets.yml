@@ -1,10 +1,13 @@
 name: Changesets
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+    inputs:
+      publish:
+        description: "Create version PR and publish"
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -14,10 +17,6 @@ jobs:
   version:
     name: Version Packages
     runs-on: ubuntu-latest
-    if: |
-      !contains(github.event.head_commit.message, 'ci:') &&
-      !contains(github.event.head_commit.message, 'chore:') &&
-      !contains(github.event.head_commit.message, 'docs:')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -52,12 +51,10 @@ jobs:
       - name: Create tags
         if: steps.changesets.outputs.hasChangesets == 'true'
         run: |
-          # API タグ
           API_VERSION=$(node -p "require('./apps/api/package.json').version")
           git tag "api@${API_VERSION}"
           git push origin "api@${API_VERSION}"
 
-          # Extension タグ
           EXT_VERSION=$(node -p "require('./packages/extension/package.json').version")
           git tag "extension@${EXT_VERSION}"
           git push origin "extension@${EXT_VERSION}"
