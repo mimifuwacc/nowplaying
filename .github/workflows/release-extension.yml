@@ -16,7 +16,7 @@ permissions:
 
 env:
   PACKAGE_NAME: extension
-  PACKAGE_PATH: packages/extension
+  PACKAGE_PATH: apps/extension
 
 jobs:
   build:
@@ -60,7 +60,7 @@ jobs:
 
       - name: Create zip file
         run: |
-          cd packages/extension/build/chrome-mv3-prod
+          cd apps/extension/build/chrome-mv3-prod
           zip -r ../../../extension-${{ steps.get_version.outputs.version }}.zip .
           cd ../../../..
 

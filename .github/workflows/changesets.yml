@@ -55,7 +55,7 @@ jobs:
           git tag "api@${API_VERSION}"
           git push origin "api@${API_VERSION}"
 
-          EXT_VERSION=$(node -p "require('./packages/extension/package.json').version")
+          EXT_VERSION=$(node -p "require('./apps/extension/package.json').version")
           git tag "extension@${EXT_VERSION}"
           git push origin "extension@${EXT_VERSION}"
         env:
