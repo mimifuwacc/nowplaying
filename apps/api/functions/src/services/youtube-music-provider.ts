@@ -1,6 +1,23 @@
 import { MusicService } from "./music-service";
 import type { MusicServiceProvider, TrackData } from "./music-service";
 
+interface YouTubeVideoResponse {
+  items: Array<{
+    id: string;
+    snippet: {
+      title: string;
+      channelTitle: string;
+      description: string;
+      thumbnails: {
+        maxres?: { url: string };
+        high?: { url: string };
+        medium?: { url: string };
+        default?: { url: string };
+      };
+    };
+  }>;
+}
+
 export class YouTubeMusicProvider implements MusicServiceProvider {
   service = MusicService.YOUTUBE_MUSIC;
 
@@ -32,7 +49,7 @@ export class YouTubeMusicProvider implements MusicServiceProvider {
       throw new Error(`YouTube API request failed: ${response.status}`);
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as YouTubeVideoResponse;
 
     if (!data.items || data.items.length === 0) {
       throw new Error("Video not found");

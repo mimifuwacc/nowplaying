@@ -1,6 +1,17 @@
 import { MusicService } from "./music-service";
 import type { MusicServiceProvider, TrackData } from "./music-service";
 
+interface SpotifyTrackResponse {
+  name: string;
+  artists: { name: string }[];
+  album: { name: string; images: { url: string }[] };
+  external_urls: { spotify: string };
+}
+
+interface SpotifyTokenResponse {
+  access_token: string;
+}
+
 export class SpotifyProvider implements MusicServiceProvider {
   service = MusicService.SPOTIFY;
 
@@ -35,12 +46,7 @@ export class SpotifyProvider implements MusicServiceProvider {
       throw new Error(`Spotify API request failed: ${response.status}`);
     }
 
-    const track = (await response.json()) as {
-      name: string;
-      artists: { name: string }[];
-      album: { name: string; images: { url: string }[] };
-      external_urls: { spotify: string };
-    };
+    const track = (await response.json()) as SpotifyTrackResponse;
 
     return {
       title: track.name || "Unknown Title",
@@ -76,7 +82,7 @@ export class SpotifyProvider implements MusicServiceProvider {
       throw new Error(`Spotify token request failed: ${response.status}`);
     }
 
-    const data = (await response.json()) as { access_token: string };
+    const data = (await response.json()) as SpotifyTokenResponse;
     return data.access_token;
   }
 
